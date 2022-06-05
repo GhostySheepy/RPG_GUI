@@ -58,7 +58,7 @@ void GUI_Drawer::MapToWindow(Window* draw_to, Map* map_to_draw, int centering_ra
 			}
 
 			if (map_to_draw->checkTileForEnemy(current_tile)) {
-				current_enemy_sprite = current_TextureHolder->get_EnemySprites()->getSpriteFor(0);
+				current_enemy_sprite = current_TextureHolder->get_EnemySprites()->getSpriteFor(3);
 				current_enemy_sprite.setPosition(current_drawing_pos);
 				draw_to->Draw(current_enemy_sprite);
 			}

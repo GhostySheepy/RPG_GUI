@@ -15,7 +15,6 @@ KeyBind::~KeyBind()
 void KeyBind::KeyPressed()
 {
 	if (my_unpressed == true) {
-		std::cout << "Bind:KeyPressed" << std::endl;
 		my_triggerOnNextReq = true;
 		my_unpressed = false;
 	}
