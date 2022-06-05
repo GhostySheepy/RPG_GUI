@@ -1,0 +1,50 @@
+{
+	"Chests": [
+		{
+			"pos":[ 6, 6 ],
+			"coin": 20,
+			"exp": 40,
+			"items": [
+				{
+					"type": "5",
+					"name": "Rusted Sword"
+				},
+				{
+					"type": "5",
+					"name": "Bow"
+				},
+				{
+					"type": "0",
+					"name": "Stupid_costume"
+				}
+			]
+		}
+	],
+
+	"Enemies":[
+		{"pos": [7,7],
+		"type": "W",
+		"level": 1}, 
+		{"pos": [9,8],
+		"type": "W",
+		"level": 2},
+		{"pos": [1,1],
+		"type": "W",
+		"level": 3},
+		{"pos": [1,3],
+		"type": "W",
+		"level": 3} 
+	],
+
+	"Not_Enemies":[
+		{"pos": [7,9],
+		"type": "H"}, 
+		{"pos": [9,9],
+		"type": "H"}
+	],
+
+	"Player":{
+		"pos": [5,5]
+	}
+
+}

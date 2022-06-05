@@ -1,0 +1,399 @@
+{
+	"0":{
+		"Stupid_costume":{
+			"description":"I`ve seen some homeless people wearing this", 
+			"level": 0,
+			"weight": 4,
+			"price": 1,
+			"durability": 10,
+			"max_durability": 4,
+			"spec_change":[
+				{
+					"z": 12,
+					"a": 0,
+					"x": 7,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 1,
+					"z_max": 15
+				},
+				{
+					"z": 13,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 25,
+					"z_min": 1,
+					"z_max": 45
+				},
+				{
+					"z": 14,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 1,
+					"z_max": 45
+				},
+				{
+					"z": 15,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 1,
+					"z_max": 45
+				},
+				{
+					"z": 16,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 1,
+					"z_max": 45
+				},
+				{
+					"z": 17,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 1,
+					"z_max": 45
+				},
+				{
+					"z": 25,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 25,
+					"z_min": 1,
+					"z_max": 85
+				}
+			],
+			"durability_coef":[
+				{
+					"z": 14,
+					"a": -0.1,
+					"x": 14,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 5,
+					"z_max": 45
+				},
+				{
+					"z": 15,
+					"a": -0.1,
+					"x": 15,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 5,
+					"z_max": 45
+				},
+				{
+					"z": 16,
+					"a": -0.1,
+					"x": 16,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 5,
+					"z_max": 45
+				},
+				{
+					"z": 17,
+					"a": -0.1,
+					"x": 17,
+					"b": 0,
+					"y": 2,
+					"c": 5,
+					"z_min": 5,
+					"z_max": 45
+				}
+			],
+			"transforms_when": 0,
+			"transforms_to":{
+				"type": "0",
+				"name": "Formless piece of cloth"
+			}
+		},
+		"Formless piece of cloth":{
+			"description":"I`ve seen some homeless people wearing this", 
+			"level": 0,
+			"weight": 1,
+			"price": 1,
+			"durability": 10000,
+			"max_durability": 10000,
+			"spec_change":[
+			],
+			"durability_coef":[
+			],
+			"transforms_when": 1000,
+			"transforms_to":{
+				"type": "0",
+				"name": "Formless piece of cloth"
+			}
+		}
+	},
+	"1":[], 
+	"2":[], 
+	"3":[], 
+	"4":[], 
+	"5":{ 
+		"Wooden stick":{
+			"description":"Just a simple stick", 
+			"level": 0,
+			"weight": 2,
+			"price": 1,
+			"durability": 2,
+			"max_durability": 2,
+			"spec_change":[
+				{
+					"z": 18,
+					"a": 0.5,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 1,
+					"z_min": 1,
+					"z_max": 2
+				},
+				{
+					"z": 23,
+					"a": 0.5,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 1,
+					"z_min": 1,
+					"z_max": 2
+				}
+			],
+			"durability_coef":[
+				{
+					"z": 23,
+					"a": -0.5,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": -1,
+					"z_min": 1,
+					"z_max": 2
+				},
+				{
+					"z": 22,
+					"a": -0.5,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": -1,
+					"z_min": 1,
+					"z_max": 5
+				}
+			],
+			"transforms_when": 1,
+			"transforms_to":{
+				"type": "5",
+				"name": "Sharpened stick"
+			}
+		},
+		"Sharpened stick":{
+			"description":"Not just a simple stick", 
+			"level": 0,
+			"weight": 1,
+			"price": 1,
+			"durability": 1,
+			"max_durability": 2,
+			"spec_change":[
+				{
+					"z": 18,
+					"a": 0.5,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 1,
+					"z_min": 1,
+					"z_max": 2
+				},
+				{
+					"z": 22,
+					"a": 1,
+					"x": 3,
+					"b": 0,
+					"y": 2,
+					"c": 1,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"durability_coef":[
+			],
+			"transforms_when": 1,
+			"transforms_to":{
+				"type": "5",
+				"name": "Sharpened_stick"
+			}
+		},
+		"Bow":{
+			"description":"Not just a simple stick, but a stick with arrows", 
+			"level": 0,
+			"weight": 3,
+			"price": 3,
+			"durability": 100,
+			"max_durability": 100,
+			"spec_change":[
+				{
+					"z": 18,
+					"a": 0.5,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 1,
+					"z_min": 1,
+					"z_max": 2
+				},
+				{
+					"z": 22,
+					"a": 2,
+					"x": 3,
+					"b": 0,
+					"y": 2,
+					"c": 1,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"durability_coef":[
+				{
+					"z": 22,
+					"a": -0.01,
+					"x": 3,
+					"b": 0,
+					"y": 2,
+					"c": 0,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"transforms_when": 0,
+			"transforms_to":{
+				"type": "5",
+				"name": "Wooden stick"
+			}
+		},
+		"Magic Wand":{
+			"description":"Not just a simple stick, but a stick with feather from phoenix butt", 
+			"level": 0,
+			"weight": 4,
+			"price": 4,
+			"durability": 100,
+			"max_durability": 100,
+			"spec_change":[
+				{
+					"z": 24,
+					"a": 2,
+					"x": 6,
+					"b": 1,
+					"y": 7,
+					"c": 0,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"durability_coef":[
+				{
+					"z": 24,
+					"a": -0.02,
+					"x": 6,
+					"b": -0.01,
+					"y": 7,
+					"c": 0,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"transforms_when": 0,
+			"transforms_to":{
+				"type": "5",
+				"name": "Wooden stick"
+			}
+		},
+		"Rusted Sword":{
+			"description":"It would be more useful, if it was just a stick", 
+			"level": 0,
+			"weight": 4,
+			"price": 4,
+			"durability": 100,
+			"max_durability": 100,
+			"spec_change":[
+				{
+					"z": 18,
+					"a": 0,
+					"x": 2,
+					"b": 0,
+					"y": 2,
+					"c": 2,
+					"z_min": 1,
+					"z_max": 10
+				},
+				{
+					"z": 22,
+					"a": 1,
+					"x": 7,
+					"b": 1,
+					"y": 2,
+					"c": 0,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"durability_coef":[
+				{
+					"z": 22,
+					"a": -0.02,
+					"x": 3,
+					"b": -0.05,
+					"y": 2,
+					"c": 0,
+					"z_min": 1,
+					"z_max": 10
+				}
+			],
+			"transforms_when": 0,
+			"transforms_to":{
+				"type": "7",
+				"name": "Piece of wood"
+			}
+		}
+	},
+	"6":[],
+	"7":{
+		"Piece of wood":{
+			"description":"Nice for fireplace", 
+			"level": 0,
+			"weight": 1,
+			"price": 1,
+			"durability": 10000,
+			"max_durability": 10000,
+			"spec_change":[
+			],
+			"durability_coef":[
+			],
+			"transforms_when": 1000,
+			"transforms_to":{
+				"type": "7",
+				"name": "Piece of wood"
+			}
+		}
+	}
+}
