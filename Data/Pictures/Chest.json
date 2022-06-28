@@ -1,0 +1,19 @@
+{
+	"img_file": "Data\\Pictures\\Chest.png",
+	"max_count": 1,
+	"spriteData": {
+		"sizing": [ 100, 100 ],
+		"framing": [
+			[ 0, 0 ],
+			[ 100, 0 ]
+		],
+		"set_smooth": [
+			false,
+			false
+		],
+		"set_color": [
+			[ 255, 255, 255, 255 ],
+			[ 255, 255, 255, 255 ]
+		]
+	}
+}

@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 
-#include "Item.h"
 #include "Speclist.h"
+#include "Item.h"
 
 class Player
 {
@@ -46,6 +46,7 @@ public:
 	bool isAlive();
 
 	Speclist attack();
+	Speclist attack(int* input_stage, std::vector<bool> inputs, std::string* outputs);
 
 	void defence(Speclist enemy_speclist); // 0 - player is dead, 1 - is alive
 

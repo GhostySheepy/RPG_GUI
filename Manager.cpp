@@ -12,8 +12,6 @@
 #include "SETTINGS.h"
 
 
-
-
 Manager::Manager()
 {
 	current_window = new Window("RPG", sf::Vector2u(960, 540));
@@ -24,26 +22,30 @@ Manager::Manager()
 
 	current_player = Player::getInstance("TEST");
 	current_map = Custom_Init::for_Map();
+
+	fight_input_await = 0;
+
+	current_State = Game_States::STANDART;
 }
 
 void Manager::startNewGame()
 {
-	/*std::cout << "Welcome to the Game!\n" <<
-		"Enter your name: ";
-
-	std::string new_name;
-
-	std::cin >> new_name;*/
-
-	current_player = Player::getInstance("TEST");
 	current_map = Custom_Init::for_Map();
 }
 
 void Manager::handleInput()
 {
-	auto inputsToProcess = current_EventManager->AskForTriggers(input_demand);
-	current_map->moovePlayer(Helpers::get_vectorSlice(inputsToProcess, 0, 3));
+	if (current_State == Game_States::STANDART) {
+		auto inputsToProcess = current_EventManager->AskForTriggers(std_input_demand);
+		current_map->moovePlayer(Helpers::get_vectorSlice(inputsToProcess, 0, 3));
+		spare_inputs = Helpers::get_vectorSlice(inputsToProcess, 4, 4);
+	}
+	else {
+		auto inputsToProcess = current_EventManager->AskForTriggers(fight_input_demand);
+		spare_inputs = Helpers::get_vectorSlice(inputsToProcess, 0, 3);
+	}
 
+	
 }
 
 void Manager::GameLoop()
@@ -52,272 +54,158 @@ void Manager::GameLoop()
 	
 	my_clock.restart();
 
+	std::pair<int, int> previous_pos = current_map->getSize();
+
+	int fight_result;
+
 	while (!current_window->IsDone()) {
 		if (elapsed_time >= timestep) {
 			elapsed_time -= timestep;
 
 			current_window->Update(); // Get input
 			handleInput();
+			if (current_State == Game_States::STANDART) {
+				if (current_map->getPlayerPos() != previous_pos) {
+					previous_pos = current_map->getPlayerPos();
+
+					if (current_map->checkTileForEnemy(current_map->getPlayerPos())) {
+						current_State = Game_States::FIGHT;
+						fight_input_await = 0;
+						current_Drawer.CMD_PutToStack("You are figthing with: " + current_map->getPlayerTileEnemy()->getName() + "  (" + std::to_string(current_map->getPlayerTileEnemy()->getHealth()) + " HP)\n");
+					}
+					if (current_map->checkTileForNPC(current_map->getPlayerPos())) {
+						current_Drawer.CMD_PutToStack("Hey! You, there! I could heal you for only  " + std::to_string(current_map->getPlayerTileNPC()->moneyForHeal()) + ".\n Press F to do that\n");
+					}
+					if (current_map->checkTileForChest(current_map->getPlayerPos())) {
+						current_Drawer.CMD_PutToStack("You are in a tile with chest. Press F to collect some loot\n");
+					}
+
+					/*if (current_map->checkTileForChest(current_map->getPlayerPos())) {
+						std::cout << "Your tile has chest, do you want to open it? (y)es/ (n)o" << std::endl;
+						openChest(current_map->getPlayerTileChest());
+					}*/
+				}
+				if (current_map->checkTileForNPC(current_map->getPlayerPos())) {
+					HealStep(current_map->getPlayerTileNPC(), spare_inputs.at(0), &current_Drawer);
+				}
+				else if (current_map->checkTileForChest(current_map->getPlayerPos())) {
+					ChestStep(current_map->getPlayerTileChest(), spare_inputs.at(0), &current_Drawer);
+				}
+				
+
+			}
+			else if (current_State == Game_States::FIGHT) {
+				fight_result = FightStep(current_map->getPlayerTileEnemy(), &current_Drawer);
+				if (fight_result == 1) {
+					Chest enemy_loot(current_map->getPlayerTileEnemy()->inherit_item(), current_map->getPlayerTileEnemy()->get_level() * 5, current_map->getPlayerTileEnemy()->get_level() * 10);
+					current_map->burryPlayerTileNPC(enemy_loot);
+					current_State = Game_States::STANDART;
+				}
+				else if (fight_result == 0) break;
+			}
+
+
+			
 			current_window->BeginDraw(); // Clear.
+
 			current_Drawer.MapToWindow(current_window, current_map, 4);
 			current_Drawer.InventoryToWindow(current_window);
 			current_Drawer.CMDToWindow(current_window);
+
 			current_window->EndDraw(); // Display.
 		}
 		elapsed_time += my_clock.restart();
 	}
 	current_window->Close();
+}
 
+int Manager::FightStep(std::shared_ptr<npc::Enemy> current_enemy, GUI_Drawer* current_Drawer) //0 player loose, 1 - player win
+{
+	std::string to_output;
+	Speclist player_attacking_list = current_player->attack(&fight_input_await, spare_inputs, &to_output);
+	if (to_output != "") {
+		current_Drawer->CMD_PutToStack(to_output);
+		to_output = "";
+	}
+	if (fight_input_await == 4) {
+		fight_input_await = 0;
+		current_enemy->defence(player_attacking_list);
 
+		current_Drawer->CMD_PutToStack("Enemy health : " + std::to_string(current_enemy->getHealth()) + "\n");
 
-/*	char choice;
-	int fight_result;
-	while (1)
-	{
-		DisplayMap::centerdedToCMD(3, current_map);
-		std::cout << "Where you want to go: (f)orward, (b)ackward, (l)eft, (r)igt? Open (i)nventory. ";
-		std::cin >> choice;
-		std::cout << std::endl;
-		if (std::cin.fail())
+		current_player->setHealth(current_player->getHealthRegen());
+
+		if (!current_enemy->isAlive())
 		{
-			std::cin.clear();
-			std::cin.ignore(32767, '\n');
-			std::cout << "Oops, that input is invalid.  Please try again.\n";
+			current_Drawer->CMD_PutToStack("Yoy`ve killed enemy, now you can collect his heritance by pressing F \n");
+
+			return 1;
 		}
-		else if (choice == 'i')
+		current_Drawer->CMD_PutToStack("Now Enemy`s turn, watch your HP falling! \n");
+
+		current_player->defence(current_enemy->attack());
+
+		if (!current_player->isAlive())
 		{
-			current_player->openInventory();
-			continue;
+			current_Drawer->CMD_PutToStack("Noob, delete the game! ^_^ \n");
+			return 0;
 		}
+	}
+	return 2;
+}
+
+void Manager::HealStep(npc::NotEnemy* nurse, bool input, GUI_Drawer* current_Drawer)
+{
+	if (input == true) {
+		if (current_player->getMoney() >= nurse->moneyForHeal())
 		{
-			std::cin.ignore(32767, '\n');
-			current_map->moovePlayer(choice);
-			if (current_map->checkTileForEnemy(current_map->getPlayerPos()))
-			{
-				fight_result = startFight(current_map->getPlayerTileEnemy());
-				if (fight_result == 1) {
-					Chest enemy_loot(current_map->getPlayerTileEnemy()->inherit_item(), current_map->getPlayerTileEnemy()->get_level()*5, current_map->getPlayerTileEnemy()->get_level() * 10);
-					current_map->burryPlayerTileNPC(enemy_loot);
+			nurse->heal();
+			current_Drawer->CMD_PutToStack("Here  ya` go! \n");
+		}
+		else
+		{
+			current_Drawer->CMD_PutToStack("You don't have enough money. \n");
+		}
+	}
+}
+
+int Manager::ChestStep(Chest* player_chest, bool input, GUI_Drawer* current_Drawer)
+{
+	
+	std::vector<Item> chest_items = player_chest->get_item_list();
+	if (input == true) {
+		int got_coins = player_chest->get_coins(current_player);
+		int got_exp = player_chest->get_experience(current_player);
+		if (got_coins != 0 || got_exp != 0) {
+			current_Drawer->CMD_PutToStack("\nYou found " + std::to_string(got_coins) + " coins and " + std::to_string(got_exp) + "\n");
+			current_Drawer->CMD_PutToStack("Now press F again to collect items!\n");
+			for (int i = 0; i < chest_items.size(); i++) {
+				std::cout << i << "\t" << chest_items.at(i).getName() << " : " << chest_items.at(i).getTextureIter() << std::endl;
+			}
+			return 0;
+		}
+		else {
+			int free_inv_place;
+
+			int count = 0;
+			std::vector<Item> chest_items;
+
+			while (1) {
+
+				if (player_chest->is_empty()) {
+					current_map->burryPlayerTileChest();
+					break;
 				}
-				else
-				{
+
+				free_inv_place = player_chest->pick_item(0, current_player);
+				if (free_inv_place < 0) {
 					break;
 				}
 			}
-			if (current_map->checkTileForNPC(current_map->getPlayerPos()))
-			{
-				//npc::NotEnemy nurse;
-				if (current_map->getPlayerTileNPC() == NULL) {
-					std::cout << "ITS NULL" << std::endl;
-				}
-				else {
-					std::cout << "ITS NOT NULL" << std::endl;
-				}
-				std::cout << current_map->getPlayerTileNPC()->getName() << std::endl;
-				
-				startHeal(current_map->getPlayerTileNPC());
-
-			}
-			if (current_map->checkTileForChest(current_map->getPlayerPos()))
-			{
-				std::cout << "Your tile has chest, do you want to open it? (y)es/ (n)o" << std::endl;
-				std::cin >> choice;
-				std::cout << std::endl;
-				if (std::cin.fail())
-				{
-					std::cin.clear();
-					std::cin.ignore(32767, '\n');
-					std::cout << "Oops, that input is invalid.  Please try again later.\n";
-				}
-				else
-				{
-					std::cin.ignore(32767, '\n');
-
-					switch (choice) {
-					case 'y':
-						openChest(current_map->getPlayerTileChest());
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		}
-	}*/
-}
-
-void Manager::continueGame()
-{
-
-}
-
-bool Manager::startFight(std::shared_ptr<npc::Enemy> current_enemy) //0 player loose, 1 - player win
-{
-	//test segment
-	std::cout << "Fight: " << current_player->getName() << " (" << current_player->getHealth() << " HP) VS "
-		<< current_enemy->getName() << " (" << current_enemy->getHealth() << " HP)\n";
-
-	bool player_turn = 1;
-
-	while (1)
-	{
-		if (player_turn)  
-		{
-			std::cout << "Your turn!\n";
-
-			std::cout << "Choose action: (a)ttack, (s)kip (default attack). \n";
-			
-			current_enemy->defence(current_player->attack());
-
-			std::cout << "Enemy health: " << current_enemy->getHealth() << " HP\n";
-
-			current_player->setHealth(current_player->getHealthRegen());
-
-			if (!current_enemy->isAlive())
-			{
-				std::cout << "Enemy is dead\n"; // test, нужно открыть сундук, наверное
-				
-				return 1;
-			}
-		}
-		else
-		{
-			std::cout << "Enemy turn!\n";
-
-			current_player->defence(current_enemy->attack());
-
-			std::cout << "Your health: " << current_player->getHealth() << " HP\n";
-
-			if (!current_player->isAlive())
-			{
-				std::cout << "Noob, delete the game! ^_^ \n";
-				return 0;
-			}
-		}
-		player_turn = !player_turn;
-	}
-}
-
-void Manager::startHeal(npc::NotEnemy* nurse)
-{
-	std::cout << "Hello. As you can see, I am a nurse. What are the nurses doing? Correct answer: heal." << std::endl;
-	std::cout << "Let's count now the number of coins that you need to give me." << std::endl;
-
-	if (current_player->getMoney() >= nurse->moneyForHeal())
-	{
-		std::cout << "Price is: " << nurse->moneyForHeal() << std::endl;
-		std::cout << "Do you want to heal? ((y)es or (n)o)" << std::endl;
-
-		char answer;
-
-		while (1)
-		{
-			std::cin >> answer;
-			if ('y' == answer)
-			{
-				nurse->heal();
-				break;
-			}
-			else if ('n' == answer)
-			{
-				break;
-			}
-			std::cout << "Oops, something went wrong." << std::endl;
-		}
-	}
-	else
-	{
-		std::cout << "You don't have enough money." << std::endl;
-	}
-}
-
-void Manager::openChest(Chest* player_chest)
-{
-	int got_coins = player_chest->get_coins(current_player);
-	int got_exp = player_chest->get_experience(current_player);
-	if (got_coins != 0 || got_exp != 0) {
-		std::cout << "You found and opened a new chest and got:  " << std::endl;
-		std::cout << "\t" << got_coins << "-- coins;" << std::endl;
-		std::cout << "\t" << got_exp << "-- experience;" << std::endl;
-	}
-	else {
-		std::cout << "You opened same chest again, no coins for you!  " << std::endl;
-
-	}
-	
-	
-	int free_inv_place;
-
-	std::string choice;
-	int choice_int;
-	std::vector<Item> chest_items;
-
-	while (1) {
-		if (player_chest->is_empty()) {
-			std::cout << "There is no items inside!" << std::endl;
-			std::cout << "Just write something to quit back to map" << std::endl;
-			std::cin >> choice;
-			std::cout << std::endl;
-			current_map->burryPlayerTileChest();
-			break;
-		}
-		else {
-			std::cout << "Choose which item put to an inventory:" << std::endl;
-			chest_items = player_chest->get_item_list();
-			for (int i = 0; i < chest_items.size(); i++) {
-				std::cout << i << "\t" << chest_items.at(i).getName() << ";" << std::endl;
-			}
-		}
-		std::cout << "Or write (q) to quit back to map" << std::endl;
-		choice_int = -1;
-		std::cin >> choice;
-		std::cout << std::endl;
-		if (std::cin.fail())
-		{
-			std::cin.clear();
-			std::cin.ignore(32767, '\n');
-			std::cout << "Oops, that input is invalid.  Please try again.\n";
-		}
-		else
-		{
-			std::cin.ignore(32767, '\n');
-			if (choice == "q") {
-				if (player_chest->is_empty()) {
-					current_map->burryPlayerTileChest();
-				}
-				break;
-			}
-			choice_int = stoi(choice);
-			if (choice_int >= chest_items.size()) {
-				std::cout << "There is no item with that num" << std::endl;
-				continue;
-			}
-			free_inv_place = player_chest->pick_item(choice_int, current_player);
-			if (free_inv_place < 0) {
-				std::cout << "There is not enough space in inventory to put this item, you lack  " << free_inv_place << "to do this" << std::endl;;
-			}
-			else {
-				std::cout << "Succsessful, free space:  " << free_inv_place << std::endl;
-			}
+			return 0;
 		}
 	}
 }
-
-void Manager::movePlayer()
-{
-
-}
-
-void Manager::saveGame()
-{
-	
-}
-
-void Manager::exit()
-{
-
-}
-
 
 
 Manager::~Manager()

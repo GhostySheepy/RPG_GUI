@@ -41,6 +41,8 @@ void Item::transform_item(Item_Search_Plate transform_plate)
 	price = found_item["price"];
 	durability = found_item["durability"];
 	max_durability = found_item["max_durability"];
+	texture = found_item["texture"];
+	
 
 	transform_to.type = found_item["transforms_to"]["type"];
 	transform_to.name = found_item["transforms_to"]["name"];
@@ -66,6 +68,7 @@ Item::Item(int item_type, std::string item_name)
 	price = found_item["price"];
 	durability = found_item["durability"];
 	max_durability = found_item["max_durability"];
+	texture = found_item["texture"]; 
 
 	transform_to.type = found_item["transforms_to"]["type"];
 	transform_to.name = found_item["transforms_to"]["name"];
@@ -106,6 +109,11 @@ Item_Types Item::getType()
 int Item::getWeight()
 {
 	return weight;
+}
+
+int Item::getTextureIter()
+{
+	return texture;
 }
 
 int Item::getDurability()

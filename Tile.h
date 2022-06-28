@@ -25,7 +25,7 @@ private:
 	bool is_not_enemy_here;
 	npc::NotEnemy* NPC;
 	bool is_chest_here;
-	Chest* chest;
+	Chest *chest;
 
 public:
 	Tile();

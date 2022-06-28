@@ -110,7 +110,6 @@ void Window::Setup(const std::string& title, const sf::Vector2u& size) {
 	my_isFocused = true;
 
 	my_eventManager = EventManager();
-	my_eventManager.AskForTriggers({SETTINGS.Key_WalkForward});
 
 	Create();
 }

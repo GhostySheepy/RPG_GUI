@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 
+
+
 #include "SETTINGS.h"
 
 class DataBase
@@ -38,7 +40,6 @@ public:
 
     void update_savelist() {
         for (const auto& entry : std::filesystem::directory_iterator(SAVES_FOLD)) {
-            std::cout << entry.path() << std::endl;
             Saves.push_back(entry.path().string());
             std::cout << entry.path().string() << std::endl;
         }

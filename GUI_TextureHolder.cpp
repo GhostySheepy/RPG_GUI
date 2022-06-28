@@ -18,7 +18,6 @@ sf::Sprite SpriteSheet::getSpriteFor(int sprite_specifier)
     sf::Sprite new_sprite;
     
     if (sprite_specifier < max_specifier && sprite_specifier >= 0) {
-
         my_spriteSheet.setSmooth(spritesData["spriteData"]["set_smooth"][sprite_specifier]);
         new_sprite.setTexture(my_spriteSheet);
         new_sprite.setTextureRect({
@@ -58,6 +57,10 @@ GUI_TextureHolder::GUI_TextureHolder()
     my_mapSpritesheet = new SpriteSheet(MAP_TEX);
     my_playerSpritesheet = new SpriteSheet(PLAYER_TEX);
     my_enemySpritesheet = new SpriteSheet(ENEMY_TEX);
+    my_chestSpritesheet = new SpriteSheet(CHEST_TEX);
+    my_itemSpritesheet = new SpriteSheet(ITEMS_TEX);
+
+    my_CMDFontSheet = new FontSheet(CMD_FONT);
 }
 
 SpriteSheet* GUI_TextureHolder::get_MapSprites()
@@ -75,7 +78,38 @@ SpriteSheet* GUI_TextureHolder::get_EnemySprites()
     return my_enemySpritesheet;
 }
 
+SpriteSheet* GUI_TextureHolder::get_ChestSprites()
+{
+    return my_chestSpritesheet;
+}
+
+SpriteSheet* GUI_TextureHolder::get_ItemSprites()
+{
+    return my_itemSpritesheet;
+}
+
+FontSheet* GUI_TextureHolder::get_CMDFontSheet()
+{
+    return my_CMDFontSheet;
+}
+
 GUI_TextureHolder::~GUI_TextureHolder()
 {
     delete my_mapSpritesheet;
+}
+
+FontSheet::FontSheet(std::string filepath)
+{
+    std::ifstream sprite_file(filepath);
+    sprite_file >> my_FontData;
+    sprite_file.close();
+
+
+    my_font.loadFromFile(my_FontData["font_file"]);
+
+}
+
+sf::Font FontSheet::getFont()
+{
+    return my_font;
 }

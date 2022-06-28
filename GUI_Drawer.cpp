@@ -51,16 +51,28 @@ void GUI_Drawer::MapToWindow(Window* draw_to, Map* map_to_draw, int centering_ra
 
 			draw_to->Draw(current_map_sprite);
 
+			if (map_to_draw->checkTileForEnemy(current_tile)) {
+				current_enemy_sprite = current_TextureHolder->get_EnemySprites()->getSpriteFor(0);
+				current_enemy_sprite.setPosition(current_drawing_pos);
+				draw_to->Draw(current_enemy_sprite);
+			}
+
+			if (map_to_draw->checkTileForNPC(current_tile)) {
+				current_enemy_sprite = current_TextureHolder->get_EnemySprites()->getSpriteFor(3);
+				current_enemy_sprite.setPosition(current_drawing_pos);
+				draw_to->Draw(current_enemy_sprite);
+			}
+
+			if (map_to_draw->checkTileForChest(current_tile)) {
+				current_enemy_sprite = current_TextureHolder->get_ChestSprites()->getSpriteFor(0);
+				current_enemy_sprite.setPosition(current_drawing_pos);
+				draw_to->Draw(current_enemy_sprite);
+			}
+
 			if (player_pos == current_tile) {
 				current_player_sprite = current_TextureHolder->get_PlayerSprites()->getSpriteFor(0);
 				current_player_sprite.setPosition(current_drawing_pos);
 				draw_to->Draw(current_player_sprite);
-			}
-
-			if (map_to_draw->checkTileForEnemy(current_tile)) {
-				current_enemy_sprite = current_TextureHolder->get_EnemySprites()->getSpriteFor(3);
-				current_enemy_sprite.setPosition(current_drawing_pos);
-				draw_to->Draw(current_enemy_sprite);
 			}
 		}
 	}
@@ -96,9 +108,47 @@ void GUI_Drawer::CMDToWindow(Window* draw_to)
 	rect.setOutlineThickness(-3);
 
 	draw_to->Draw(rect);
+
+	sf::Font current_font = current_TextureHolder->get_CMDFontSheet()->getFont();
+
+	sf::Text drawable_text;
+	drawable_text.setFont(current_font);
+	drawable_text.setString("d d d d d d d dddwwwwwwww");
+	drawable_text.setCharacterSize(20);
+	drawable_text.setFillColor(sf::Color(0, 0, 0));
+
+	sf::FloatRect text_size = drawable_text.getLocalBounds();
+	int font_size = 20 * ((cmd_size.x * 0.4) / text_size.width);
+
+	text_size = drawable_text.getLocalBounds();
+
+	drawable_text.setCharacterSize(font_size);
+
+
+	int i_max;
+	if (my_CMD_Stack.size() > 10) {
+		i_max = 10;
+	}
+	else {
+		i_max = my_CMD_Stack.size();
+	}
+	std::string overall_data = "\n";
+	
+	for (int i = 0; i < i_max; i++) {
+		overall_data += my_CMD_Stack.at(i);
+	}
+	drawable_text.setString(overall_data);
+	drawable_text.setPosition(0.5* text_size.height, (-0.5)*text_size.height);
+	draw_to->Draw(drawable_text);
+
 }
 
 GUI_Drawer::~GUI_Drawer()
 {
 	delete current_TextureHolder;
+}
+
+void GUI_Drawer::CMD_PutToStack(std::string new_message)
+{
+	my_CMD_Stack.push_front(new_message);
 }

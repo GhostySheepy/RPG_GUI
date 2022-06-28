@@ -57,6 +57,7 @@ private:
 	int weight;
 	int level; //0 - the worst, 5 - the best
 	int price;
+	int texture;
 
 	int durability;
 	int max_durability;
@@ -84,6 +85,7 @@ public:
 	Item_Types getType();
 
 	int getWeight();
+	int getTextureIter();
 	int getDurability();
 
 	void repairItem();

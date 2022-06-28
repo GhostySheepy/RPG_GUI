@@ -12,5 +12,5 @@ void main() {
     Manager new_manager;
     new_manager.startNewGame();
     new_manager.GameLoop();
-    
+
 }
