@@ -18,7 +18,7 @@ Player* Player::getInstance(std::string n)
 Player::Player(std::string n) :
 	name(n)
 {
-	player_speclist.specs[static_cast<int>(Spec_Types::Strength)] = 4;
+	player_speclist.specs[static_cast<int>(Spec_Types::Strength)] = 10;
 	player_speclist.specs[static_cast<int>(Spec_Types::Perception)] = 4;
 	player_speclist.specs[static_cast<int>(Spec_Types::Endurance)] = 4;
 	player_speclist.specs[static_cast<int>(Spec_Types::Charisma)] = 4;
