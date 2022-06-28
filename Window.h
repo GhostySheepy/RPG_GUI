@@ -35,6 +35,8 @@ public:
 	EventManager* GetEventManager();
 	sf::Vector2u GetWindowSize();
 
+	sf::RenderWindow& getRenderWindow();
+
 private:
 	void Setup(const std::string& title, const sf::Vector2u& size);
 	void Create();

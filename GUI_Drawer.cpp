@@ -2,6 +2,8 @@
 
 #include "WindowSlicer.h"
 
+#include <Windows.h>
+
 GUI_Drawer::GUI_Drawer(GUI_TextureHolder* new_TextureHolder)
 {
 	current_TextureHolder = new_TextureHolder;
@@ -80,7 +82,7 @@ void GUI_Drawer::MapToWindow(Window* draw_to, Map* map_to_draw, int centering_ra
 
 }
 
-void GUI_Drawer::InventoryToWindow(Window* draw_to)
+void GUI_Drawer::InventoryToWindow(Window* draw_to, Player& current_player)
 {
 	sf::View inv_view = WindowSlicer::getInventoryView(draw_to);
 	draw_to->SetView(inv_view);
@@ -93,6 +95,235 @@ void GUI_Drawer::InventoryToWindow(Window* draw_to)
 	rect.setOutlineThickness(-3);
 
 	draw_to->Draw(rect);
+
+	sf::Font font = current_TextureHolder->get_CMDFontSheet()->getFont();
+
+	//font.loadFromFile("electroharmonix.ttf");
+
+	sf::Text inventory;
+
+	inventory.setFont(font);
+
+	inventory.setCharacterSize(20);
+
+	inventory.setFillColor(sf::Color::Blue);
+
+	inventory.setString("Inventory");
+
+	inventory.setPosition(sf::Vector2f(3, 0));
+
+	draw_to->Draw(inventory);
+	//////////////////////////////////////////////
+
+	int inv_view_capacity = 16;
+
+
+	sf::RectangleShape item_empty(sf::Vector2f(39.f, 39.f));
+
+	item_empty.setFillColor(rect.getFillColor());
+
+	item_empty.setOutlineThickness(1.f);
+
+	item_empty.setOutlineColor(sf::Color::Blue);
+
+	sf::Vector2f item_shift = sf::Vector2f(46, 46), item_cords = sf::Vector2f(6, 40);
+
+
+	for (int i = 0; i < current_player.getInventory().size(); i++)
+	{
+		Item current_item = current_player.getInventory()[i];
+
+		//load texture of current_item
+		
+		sf::Sprite sprite = current_TextureHolder->get_ItemSprites()->getSpriteFor(current_item.getTextureIter());
+
+		sprite.setScale(0.4, 0.4);
+
+		sprite.setPosition(item_cords);
+
+
+
+		draw_to->Draw(sprite);
+
+		sf::Vector2i mouse_pos = sf::Mouse::getPosition(draw_to->getRenderWindow());
+
+		if (mouse_pos.x > draw_to->getRenderWindow().getSize().x - rect.getSize().x + item_cords.x &&
+			mouse_pos.x < draw_to->getRenderWindow().getSize().x - rect.getSize().x + item_cords.x + 40 &&
+			mouse_pos.y > item_cords.y && mouse_pos.y < item_cords.y + 40 &&
+			sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			current_player.equipItem(current_item, i);
+			Sleep(100);
+		}
+
+		if (i == 3 || i == 7 || i == 11)
+		{
+			item_cords.y += item_shift.y;
+
+			item_cords.x = 6;
+		}
+		else
+		{
+			item_cords.x += item_shift.x;
+		}
+	}
+
+	for (int i = current_player.getInventory().size(); i < inv_view_capacity; i++)
+	{
+		item_empty.setPosition(item_cords);
+
+		draw_to->Draw(item_empty);
+
+		if (i == 3 || i == 7 || i == 11)
+		{
+			item_cords.y += item_shift.y;
+
+			item_cords.x = 6;
+		}
+		else
+		{
+			item_cords.x += item_shift.x;
+		}
+	}
+	//////////////////////////////////////////////
+	sf::Sprite current_player_sprite = current_TextureHolder->get_PlayerSprites()->getSpriteFor(0);
+
+	current_player_sprite.setPosition(sf::Vector2f(45, 250));
+
+	current_player_sprite.setColor(sf::Color(255, 255, 255, 128));
+
+	draw_to->Draw(current_player_sprite);
+
+
+	inventory.setString("Equipment");
+
+	inventory.setPosition(sf::Vector2f(3, 220));
+
+	draw_to->Draw(inventory);
+
+
+	item_empty.setFillColor(sf::Color(0, 0, 0, 0));
+
+	item_empty.setSize(sf::Vector2f(25.f, 25.f));
+
+	item_cords = sf::Vector2f(95, 250);
+
+	if (current_player.isEquiped("Hat").getName() != "")
+	{
+		sf::Sprite hat_sprite = current_TextureHolder->get_ItemSprites()->getSpriteFor(current_player.isEquiped("Hat").getTextureIter());
+
+		hat_sprite.setScale(0.25, 0.25);
+
+		hat_sprite.setPosition(item_cords);
+
+		draw_to->Draw(hat_sprite);
+
+	}
+	else
+	{
+		item_empty.setPosition(item_cords);
+
+		draw_to->Draw(item_empty);
+	}
+
+	item_cords = sf::Vector2f(80, 280);
+
+	if (current_player.isEquiped("Armor").getName() != "")
+	{
+		sf::Sprite armor_sprite = current_TextureHolder->get_ItemSprites()->getSpriteFor(current_player.isEquiped("Armor").getTextureIter());
+
+		armor_sprite.setScale(0.25, 0.25);
+
+		armor_sprite.setPosition(item_cords);
+
+		draw_to->Draw(armor_sprite);
+		
+	}
+	else
+	{
+		item_empty.setPosition(item_cords);
+
+		draw_to->Draw(item_empty);
+	}
+
+	item_cords = sf::Vector2f(110, 295);
+
+	if (current_player.isEquiped("Weapon").getName() != "")
+	{
+		sf::Sprite weapon_sprite = current_TextureHolder->get_ItemSprites()->getSpriteFor(current_player.isEquiped("Weapon").getTextureIter());
+
+		weapon_sprite.setScale(0.25, 0.25);
+
+		weapon_sprite.setPosition(item_cords);
+
+		draw_to->Draw(weapon_sprite);
+
+	}
+	else
+	{
+		item_empty.setPosition(item_cords);
+
+		draw_to->Draw(item_empty);
+	}
+
+	//////////////////////////////////////////////
+	inventory.setString("    Stats");
+
+	inventory.setPosition(sf::Vector2f(3, 350));
+
+	draw_to->Draw(inventory);
+
+	inventory.setCharacterSize(12);
+
+	inventory.setFillColor(sf::Color::Black);
+
+	std::string current_string;
+
+
+	current_string = "Name: " + current_player.getName();
+
+	inventory.setString(current_string);
+
+	inventory.setPosition(sf::Vector2f(3, 400));
+
+	draw_to->Draw(inventory);
+
+
+	current_string = "Health: " + std::to_string(static_cast<int>(current_player.getHealth()));
+
+	inventory.setString(current_string);
+
+	inventory.setPosition(sf::Vector2f(3, 430));
+
+	draw_to->Draw(inventory);
+
+
+	current_string = "Damage: " + std::to_string(static_cast<int>(current_player.getDefaultDamage()));
+
+	inventory.setString(current_string);
+
+	inventory.setPosition(sf::Vector2f(3, 460));
+
+	draw_to->Draw(inventory);
+
+
+	current_string = "Money: " + std::to_string(current_player.getMoney());
+
+	inventory.setString(current_string);
+
+	inventory.setPosition(sf::Vector2f(3, 490));
+
+	draw_to->Draw(inventory);
+
+
+	current_string = "Experience: " + std::to_string(current_player.getExp());
+
+	inventory.setString(current_string);
+
+	inventory.setPosition(sf::Vector2f(3, 520));
+
+	draw_to->Draw(inventory);
+	//////////////////////////////////////////////
 }
 
 void GUI_Drawer::CMDToWindow(Window* draw_to)

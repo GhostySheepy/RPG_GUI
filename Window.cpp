@@ -122,3 +122,8 @@ void Window::Create()
 
 	my_window.create(sf::VideoMode(my_windowSize.x, my_windowSize.y, 32), my_windowTitle, style);
 }
+
+sf::RenderWindow& Window::getRenderWindow()
+{
+	return my_window;
+}

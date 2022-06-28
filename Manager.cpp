@@ -109,7 +109,7 @@ void Manager::GameLoop()
 			current_window->BeginDraw(); // Clear.
 
 			current_Drawer.MapToWindow(current_window, current_map, 4);
-			current_Drawer.InventoryToWindow(current_window);
+			current_Drawer.InventoryToWindow(current_window, *current_player);
 			current_Drawer.CMDToWindow(current_window);
 
 			current_window->EndDraw(); // Display.

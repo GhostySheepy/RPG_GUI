@@ -35,11 +35,15 @@ public:
 
 	const int getMoney();
 
+	const int getExp();
+
 	const double getHealth();
 
 	const double& getMaxHealth();
 
 	const double getHealthRegen();
+
+	const double getDefaultDamage();
 
 	void setHealth(double incoming_regen);
 
@@ -56,8 +60,13 @@ public:
 
 	void showEquipment();
 
-	bool equipItem(Item equip_item); //0 - not succesful, 1 - succesful
+	bool equipItem(Item equip_item, int index_in_inv); //0 - not succesful, 1 - succesful
 
 	void openInventory();
 
+	std::vector<Item>& getInventory();
+
+	std::unordered_map<std::string, Item> getEquipment();
+
+	Item isEquiped(std::string item_type);
 };
