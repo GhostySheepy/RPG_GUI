@@ -71,13 +71,13 @@ void Manager::GameLoop()
 					if (current_map->checkTileForEnemy(current_map->getPlayerPos())) {
 						current_State = Game_States::FIGHT;
 						fight_input_await = 0;
-						current_Drawer.CMD_PutToStack("You are figthing with: " + current_map->getPlayerTileEnemy()->getName() + "  (" + std::to_string(current_map->getPlayerTileEnemy()->getHealth()) + " HP)\n");
+						current_Drawer.CMD_PutToStack("\nYou are figthing with: " + current_map->getPlayerTileEnemy()->getName() + "  (" + std::to_string(current_map->getPlayerTileEnemy()->getHealth()) + " HP)\n");
 					}
 					if (current_map->checkTileForNPC(current_map->getPlayerPos())) {
-						current_Drawer.CMD_PutToStack("Hey! You, there! I could heal you for only  " + std::to_string(current_map->getPlayerTileNPC()->moneyForHeal()) + ".\n Press F to do that\n");
+						current_Drawer.CMD_PutToStack("\nHey! You, there! I could heal you for only  " + std::to_string(current_map->getPlayerTileNPC()->moneyForHeal()) + ".\n Press F to do that\n\n");
 					}
 					if (current_map->checkTileForChest(current_map->getPlayerPos())) {
-						current_Drawer.CMD_PutToStack("You are in a tile with chest. Press F to collect some loot\n");
+						current_Drawer.CMD_PutToStack("\nYou are in a tile with chest. Press F to collect some loot\n");
 					}
 
 					/*if (current_map->checkTileForChest(current_map->getPlayerPos())) {
@@ -137,7 +137,7 @@ int Manager::FightStep(std::shared_ptr<npc::Enemy> current_enemy, GUI_Drawer* cu
 
 		if (!current_enemy->isAlive())
 		{
-			current_Drawer->CMD_PutToStack("Yoy`ve killed enemy, now you can collect his heritance by pressing F \n");
+			current_Drawer->CMD_PutToStack("Yoy`ve killed enemy, now you can collect loot by pressing F \n");
 
 			return 1;
 		}
@@ -177,7 +177,7 @@ int Manager::ChestStep(Chest* player_chest, bool input, GUI_Drawer* current_Draw
 		int got_coins = player_chest->get_coins(current_player);
 		int got_exp = player_chest->get_experience(current_player);
 		if (got_coins != 0 || got_exp != 0) {
-			current_Drawer->CMD_PutToStack("\nYou found " + std::to_string(got_coins) + " coins and " + std::to_string(got_exp) + "\n");
+			current_Drawer->CMD_PutToStack("\nYou found " + std::to_string(got_coins) + " coins and " + std::to_string(got_exp) + " EXP!\n");
 			current_Drawer->CMD_PutToStack("Now press F again to collect items!\n");
 			for (int i = 0; i < chest_items.size(); i++) {
 				std::cout << i << "\t" << chest_items.at(i).getName() << " : " << chest_items.at(i).getTextureIter() << std::endl;

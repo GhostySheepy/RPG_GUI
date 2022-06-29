@@ -18,7 +18,7 @@ Player* Player::getInstance(std::string n)
 Player::Player(std::string n) :
 	name(n)
 {
-	player_speclist.specs[static_cast<int>(Spec_Types::Strength)] = 4;
+	player_speclist.specs[static_cast<int>(Spec_Types::Strength)] = 7;
 	player_speclist.specs[static_cast<int>(Spec_Types::Perception)] = 4;
 	player_speclist.specs[static_cast<int>(Spec_Types::Endurance)] = 4;
 	player_speclist.specs[static_cast<int>(Spec_Types::Charisma)] = 4;
@@ -195,31 +195,35 @@ Speclist Player::attack(int* input_stage, std::vector<bool> inputs, std::string*
 			*input_stage = 4;
 		}
 		else if (inputs.at(0)) {
-			if (equipment.find("Weapon1") == equipment.end() || equipment.find("Weapon2") == equipment.end()) {
-				*outputs += "Attacking with fists, really?\n";
+			if (equipment.find("Weapon") == equipment.end() ) {
+				*outputs += "Attacking with fists, really? 2 \n";
 				*input_stage = 4;
 			}
 			else {
-				*input_stage = 2;
+				
 			}
+			*input_stage = 2;
 
 		}
 	}
 	if (*input_stage == 2) {
 		*outputs += "Choose yor weapon! Q for left hand and E for weapon in right hand\n";
-		*input_stage = 3;
+		//*input_stage = 3;
+		attacking_speclist = equipment["Weapon"].useItem(player_speclist);
+		*input_stage = 4;
 	}
-	if (*input_stage == 3) {
+	/*if (*input_stage == 3) {
 		if (inputs.at(2) || inputs.at(3)) {
 			*input_stage = 4;
+			
 			if (inputs.at(2)) {
-				attacking_speclist = equipment["Weapon1"].useItem(attacking_speclist);
+				attacking_speclist = equipment["Weapon1"].useItem(player_speclist);
 			}
 			else {
-				attacking_speclist = equipment["Weapon2"].useItem(attacking_speclist);
+				attacking_speclist = equipment["Weapon2"].useItem(player_speclist);
 			}
 		}
-	}
+	}*/
 
 	//if (*input_stage == 4) { //processing and outputting }
 	return attacking_speclist;
